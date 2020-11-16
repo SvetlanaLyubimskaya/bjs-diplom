@@ -3,13 +3,12 @@
 const userForm = new UserForm();
 
 userForm.loginFormCallback = (data) => ApiConnector.login(data, loginFn); //{логин и пароль}, функция, которая должна выполняться после выполнения запроса
-(data) => console.log(data);
 
 function loginFn(response) { //функция, которая будет выполняться при попытке авторизации
     if (response.success) {
         location.reload(); // В случае успеха запроса обновите страницу
     } else {
-        userForm.setLoginErrorMessage(error); //В случае провала запроса выведите ошибку в окно для ошибок.
+        userForm.setLoginErrorMessage(response.error); //В случае провала запроса выведите ошибку в окно для ошибок.
     }
 }
 
@@ -20,7 +19,7 @@ function registerFn(response) { //функция, которая будет вы
     if (response.success) {
         location.reload(); // В случае успеха запроса обновите страницу
     } else {
-        userForm.setLoginErrorMessage(error); //В случае провала запроса выведите ошибку в окно для ошибок.
+        userForm.setRegisterErrorMessage(response.error); //В случае провала запроса выведите ошибку в окно для ошибок.
     }
 }
 
