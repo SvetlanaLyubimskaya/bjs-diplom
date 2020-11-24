@@ -48,7 +48,7 @@ function addMoneyFn (response) { // Внутри функции выполнит
         ProfileWidget.showProfile(response.data); //отобразите в профиле новые данные о пользователе из данных ответа от сервера (showProfile).
         moneyManager.setMessage(response.success, 'Баланс успешно пополнен!'); //выведите сообщение об успехе
     } else {
-        moneyManager.setMessage(response.error, 'Ошибка, баланс не пополнен.'); //или ошибку пополнении баланса в окне отображения сообщения (setMessage) 
+        moneyManager.setMessage(response.success, 'Ошибка, баланс не пополнен.'); //или ошибку пополнении баланса в окне отображения сообщения (setMessage) 
     }
 }
 
@@ -60,7 +60,7 @@ function convertMoneyFn(response) {
         ProfileWidget.showProfile(response.data); 
         moneyManager.setMessage(response.success, 'Конвертирование валюты выполнено успешно!'); 
     } else {
-        moneyManager.setMessage(response.error, 'Ошибка, конвертирование не выполнено.'); 
+        moneyManager.setMessage(response.success, 'Ошибка, конвертирование не выполнено.'); 
     }
 }
 
@@ -72,7 +72,7 @@ function sendMoneyCallbackFn(response) {
         ProfileWidget.showProfile(response.data);
         moneyManager.setMessage(response.success, 'Перевод валюты успешно выполнен!');
     } else {
-        moneyManager.setMessage(response.error, 'Ошибка, перевод не выполнен.');
+        moneyManager.setMessage(response.success, 'Ошибка, перевод не выполнен.');
     }
 }
 
@@ -88,28 +88,28 @@ ApiConnector.getFavorites((response) => {
 });
 
 // Реализуйте добавления пользователя в список избранных:
-favoritesWidget.addUserCallback = function() {
-    ApiConnector.addUserToFavorites((response) => {
-        if (response.success) {
-            favoritesWidget.clearTable();
-            favoritesWidget.fillTable(response.data);
-            moneyManager.updateUsersList(response.data);
-            moneyManager.setMessage(response.success, 'Пользователь успешно добавлен в список избранных!');
-        } else {
-            moneyManager.setMessage(response.error, 'Ошибка, не удалось добавить пользователя в список избранных!.');
-        }
-    });
+favoritesWidget.addUserCallback = (data) => ApiConnector.addUserToFavorites(data, addUserToFavoritesFn);
+
+function addUserToFavoritesFn(response) {
+    if (response.success) {
+        favoritesWidget.clearTable();
+        favoritesWidget.fillTable(response.data);
+        moneyManager.updateUsersList(response.data);
+        moneyManager.setMessage(response.success, 'Пользователь успешно добавлен в список избранных!');
+    } else {
+        moneyManager.setMessage(response.success, 'Ошибка, не удалось добавить пользователя в список избранных!. Заполните имя и ID.');
+    }
 }
 // Реализуйте удаление пользователя из избранного
-favoritesWidget.removeUserCallback = function () {
-    ApiConnector.removeUserFromFavorites((response) => {
-        if (response.success) {
-            favoritesWidget.clearTable();
-            favoritesWidget.fillTable(response.data);
-            moneyManager.updateUsersList(response.data);
-            moneyManager.setMessage(response.success, 'Пользователь успешно удален из списка избранных!');
-        } else {
-            moneyManager.setMessage(response.error, 'Ошибка, не удалось удалить пользователя из списка избранных!.');
-        }
-    });
+favoritesWidget.removeUserCallback = (data) => ApiConnector.removeUserFromFavorites(data, removeUserFromFavoritesFn);
+
+function removeUserFromFavoritesFn(response) {
+    if (response.success) {
+        favoritesWidget.clearTable();
+        favoritesWidget.fillTable(response.data);
+        moneyManager.updateUsersList(response.data);
+        moneyManager.setMessage(response.success, 'Пользователь успешно удален из списка избранных!');
+    } else {
+        moneyManager.setMessage(response.success, 'Ошибка, не удалось удалить пользователя из списка избранных!.');
+    }
 }
